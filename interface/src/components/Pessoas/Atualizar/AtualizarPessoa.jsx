@@ -1,9 +1,27 @@
 // imports
+import { useState } from 'react';
 import './AtualizarPessoa.css';
+import { useLocation } from 'react-router';
+import { formatarData } from '../../../util/Utilitario'
+import PessoasRequests from "../../../fetch/PessoasRequests";
 /**
  * Componente com o formulário para atualizar os dados do aluno
  */
 function AtualizarPessoa() {
+    const location = useLocation();
+    const garrafa = location.state.garrafa;
+    const [pessoa, setPessoa] = useState({
+        id: garrafa.id,
+        nome: garrafa.nome,
+        cpf: garrafa.cpf,
+        dataNascimento: formatarData(new Date(garrafa.dataNascimento)),
+        telefone: garrafa.telefone,
+        endereco: garrafa.endereco,
+        altura: garrafa.altura,
+        peso: garrafa.peso
+    });
+
+    console.table(location.garrafa);
 
     // Função para atualizar os valores conforme os inputs do formulário são preenchidos
     const handleChange = (e) => {
@@ -13,11 +31,24 @@ function AtualizarPessoa() {
             [name]: value
         }));
     }
-
     // Função para atualizar os dados do aluno no banco de dados
     const handleSubmit = async (e) => {
         //enviar dados para API
+        e.preventDefault();
+
+        // executa a função atualizar e verifica se o retorno é true
+        if (await PessoasRequests.atualizarPessoa(pessoa)) {
+            // exibe alerta de sucesso
+            alert(`${pessoa.nome} atualizado com sucesso!`);
+            // redireciona para a página de listagem
+            navegacao('/listagem', { replace: true })
+        } else {
+            // exibe alerta de falha
+            alert('Erro ao atualizar informações');
+        }
     }
+
+
 
     return (
         <>
@@ -28,7 +59,7 @@ function AtualizarPessoa() {
                     <input
                         type="text"
                         name="nome"
-                        // value={pessoa.nome}
+                        value={pessoa.nome}
                         onChange={handleChange}
                     />
                 </label>
@@ -37,7 +68,7 @@ function AtualizarPessoa() {
                     <input
                         type="number"
                         name="cpf"
-                        // value={pessoa.cpf}
+                        value={pessoa.cpf}
                         onChange={handleChange}
                     />
                 </label>
@@ -47,7 +78,7 @@ function AtualizarPessoa() {
                         <input
                             type="date"
                             name="dataNascimento"
-                            // value={pessoa.dataNascimento}
+                            value={pessoa.dataNascimento}
                             onChange={handleChange}
                             style={{ width: '85%' }}
                         />
@@ -56,8 +87,8 @@ function AtualizarPessoa() {
                         Telefone
                         <input
                             type="number"
-                            name="telefone"
-                            // value={pessoa.telefone}
+                            name="telefonex"
+                            value={pessoa.telefone}
                             onChange={handleChange}
                         />
                     </label>
@@ -67,7 +98,7 @@ function AtualizarPessoa() {
                     <input
                         type="text"
                         name="endereco"
-                        // value={pessoa.endereco}
+                        value={pessoa.endereco}
                         onChange={handleChange}
                     />
                 </label>
@@ -77,7 +108,7 @@ function AtualizarPessoa() {
                         <input
                             type="number"
                             name="altura"
-                            // value={pessoa.altura}
+                            value={pessoa.altura}
                             onChange={handleChange}
                         />
                     </label>
@@ -86,12 +117,12 @@ function AtualizarPessoa() {
                         <input
                             type="number"
                             name="peso"
-                            // value={pessoa.peso}
+                            value={pessoa.peso}
                             onChange={handleChange}
                         />
                     </label>
                 </div>
-                <button type="submit">Enviar</button>
+                <button type='submit'>Enviar</button>
             </form>
         </>
     );

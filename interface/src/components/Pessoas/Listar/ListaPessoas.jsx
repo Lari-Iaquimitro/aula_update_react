@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {useNavigate} from "react-router";
 import PessoasRequests from "../../../fetch/PessoasRequests";
 import ListaPessoasUtil from "./ListaPessoasUtil";
 import { FaTrashCan } from "react-icons/fa6";
@@ -8,6 +9,7 @@ import style from './ListaPessoas.module.css';
 function ListaPessoas() {
     const [pessoas, setPessoas] = useState([]);
     const util = new ListaPessoasUtil();
+    const navegacao = useNavigate();
 
     useEffect(() => {
         const fetchPessoas = async () => {
@@ -22,7 +24,26 @@ function ListaPessoas() {
         fetchPessoas();
     }, []);
 
-    const atualizar = () => {
+    // Função para atualizar os dados do aluno no banco de dados
+    const handleSubmit = async (e) => {
+        //enviar dados para API
+        e.preventDefault();
+
+				 // executa a função atualizar e verifica se o retorno é true
+        if(await PessoasRequests.atualizarPessoa(formPessoa)) {
+		        // exibe alerta de sucesso
+            alert(`${formPessoa.nome} atualizado com sucesso!`);
+            // redireciona para a página de listagem
+            navegacao('/listagem', { replace: true })
+        } else {
+		        // exibe alerta de falha
+            alert('Erro ao atualizar informações');
+        }
+    }
+
+    const atualizar = (pessoa) => {
+        //navegar para a página de atualização
+        navegacao('/atualizar', {state: { garrafa: pessoa }, replace: true});
         // atualizar
     }
 
@@ -58,7 +79,7 @@ function ListaPessoas() {
                                         <FaTrashCan  onClick={() => alert('deletar')} className={style.pTableBodyButtons}/>
                                     </td>
                                     <td>
-                                        <AiFillEdit  onClick={() => alert('atualizar')} className={style.pTableBodyButtons}/>
+                                        <AiFillEdit  onClick={() => atualizar(pessoa)} className={style.pTableBodyButtons}/>
                                     </td>
                                 </tr>
                             ))}

@@ -1,4 +1,4 @@
-import { clearScreenDown } from "readline";
+    import { clearScreenDown } from "readline";
 import { DatabaseModel } from "./DatabaseModel";
 import { log } from "console";
 
