@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
 import PessoasRequests from "../../../fetch/PessoasRequests";
 import ListaPessoasUtil from "./ListaPessoasUtil";
 import { FaTrashCan } from "react-icons/fa6";
@@ -15,7 +15,7 @@ function ListaPessoas() {
         const fetchPessoas = async () => {
             try {
                 const pessoas = await PessoasRequests.listarPessoas();
-                setPessoas(pessoas);
+                setPessoas(pessoas.sort((a, b) => a.nome.localeCompare(b.nome)));
             } catch (error) {
                 console.error('Erro ao buscar alunos: ', error);
             }
@@ -29,14 +29,14 @@ function ListaPessoas() {
         //enviar dados para API
         e.preventDefault();
 
-				 // executa a função atualizar e verifica se o retorno é true
+        // executa a função atualizar e verifica se o retorno é true
         if(await PessoasRequests.atualizarPessoa(formPessoa)) {
-		        // exibe alerta de sucesso
+            // exibe alerta de sucesso
             alert(`${formPessoa.nome} atualizado com sucesso!`);
             // redireciona para a página de listagem
             navegacao('/listagem', { replace: true })
         } else {
-		        // exibe alerta de falha
+            // exibe alerta de falha
             alert('Erro ao atualizar informações');
         }
     }
